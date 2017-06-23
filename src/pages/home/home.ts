@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
 import { GoogleMaps, 
          GoogleMap,
@@ -21,8 +21,7 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,
               private _googleMaps: GoogleMaps,
-              private _geoLoc: Geolocation,
-              private _toastCtrl: ToastController) {
+              private _geoLoc: Geolocation) {
 
   }
 
@@ -39,11 +38,13 @@ export class HomePage {
       //Once location is gotten, we set the location on the camera.
         loc = new LatLng(res.coords.latitude, res.coords.longitude);
         this.moveCamera(loc);
+
         this.createMarker(loc, "Me").then((marker: Marker) => {
           marker.showInfoWindow();
         }).catch(err => {
           console.log(err);
         });
+        
       }).catch( err => {
         console.log(err);
       });
@@ -51,22 +52,18 @@ export class HomePage {
     });
   }
 
+  //Load the map 
   initMap(){
     let element = this.mapElement.nativeElement;
     this.map = this._googleMaps.create(element)
   }
 
+  //Get current user location
+  //Returns promise
   getLocation(){
     return this._geoLoc.getCurrentPosition();
   }
 
-  toast(msg: string){
-    const toast = this._toastCtrl.create({
-      message: msg,
-      duration: 2000
-    });
-    toast.present();
-  }
 
 //Moves the camera to any location
   moveCamera(loc: LatLng){
